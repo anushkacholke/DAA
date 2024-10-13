@@ -1,39 +1,64 @@
-/*Implement a problem of move all zeroes to end of 
-array.
-Statement: Given an array of random numbers, Push all the zero’s 
-of a given array to the end of the array. For example, if the given 
-arrays is {1, 9, 8, 4, 0, 0, 2, 7, 0, 6, 0}, it should be changed to {1, 9, 
-8, 4, 2, 7, 6, 0, 0, 0, 0}. The order of all other elements should be 
-same.
-Input : arr[] = {1, 2, 0, 4, 3, 0, 5, 0};
-Output : arr[] = {1, 2, 4, 3, 5, 0, 0, 0};*/
 #include<iostream>
+#include<vector>
 using namespace std;
-int push_zero(int a[],int n)
+void merge(vector<int>& arr,int low,int mid,int high)
 {
-    int i=0;
-    for(int j=0;j<n;j++)
+    vector<int>temp;
+    //for left half
+    for(int i=low;i<=mid;i++)
     {
-        if(a[j]!=0)
+        if(arr[i]!=0)
         {
-            swap(a[j],a[i]);
-            i++;
+            temp.push_back(arr[i]);
         }
     }
-    for(int k=0;k<n;k++)
+    //for right high
+    for(int i=mid+1;i<=high;i++)
     {
-        cout<<a[k]<<" ";
-    } 
-    cout<<"\n";
+        if(arr[i]!=0)
+        {
+            temp.push_back(arr[i]);
+        }
+    }
+    //cal no. of zeroes
+    int count_zero=(high-low+1)-temp.size();
+
+    //add zero at the end
+    for(int i=0;i<count_zero;i++)
+    {
+        temp.push_back(0);
+    }
+    //copy sort ele backto orignal arr
+    for(int i=low;i<=high;i++)
+    {
+        arr[i]=temp[i-low];
+    }
+}
+void divideRecursionFun(vector<int>& arr,int low,int high)
+{
+    //base case
+    if(low>=high)
+    {
+        return;
+    }
+    //mid to divide arr
+    int mid=low+(high-low)/2;
+    //recursion for left half
+    divideRecursionFun(arr,low,mid);
+    //recursion foe right half
+    divideRecursionFun(arr,mid+1,high);
+    //merge
+    merge(arr,low,mid,high);
 }
 int main()
 {
-    int arr[] = {1, 2, 0, 4, 3, 0, 5, 0};
-    int n=sizeof(arr)/sizeof(int);
-    push_zero(arr,n);
-    int num;
-    cout<<"\nEnter num to find square root of rhat no. :";
-    cin>>num;
-    int sq=num*num;
-    cout<<sq;
+    vector<int>arr={1,2,0,4,3,0,5,0};
+    int n=arr.size();
+    divideRecursionFun(arr,0,n-1);
+    cout<<"\nArray after moving all zero to end of the array: ";
+    for(int i=0;i<n;i++)
+    {
+        cout<<arr[i]<<" ";
+    }
+    cout<<"\n";
 }
